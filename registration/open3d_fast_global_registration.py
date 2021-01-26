@@ -9,34 +9,45 @@ import copy
 
 import time
 
-def execute_fast_global_registration(source_down, target_down,
-        source_fpfh, target_fpfh, voxel_size):
+
+def execute_fast_global_registration(source_down,
+                                     target_down,
+                                     source_fpfh,
+                                     target_fpfh,
+                                     voxel_size):
     distance_threshold = voxel_size * 0.5
-    print(":: Apply fast global registration with distance threshold %.3f" \
-            % distance_threshold)
-    result = registration_fast_based_on_feature_matching(
-            source_down, target_down, source_fpfh, target_fpfh,
-            FastGlobalRegistrationOption(
-            maximum_correspondence_distance = distance_threshold))
+    print(":: Apply fast global registration with distance threshold %.3f" % distance_threshold)
+    result = open3d.pipelines.registration.registration_fast_based_on_feature_matching(source_down,
+                                                         target_down,
+                                                         source_fpfh,
+                                                         target_fpfh,
+                                                         open3d.pipelines.registration.FastGlobalRegistrationOption(maximum_correspondence_distance=distance_threshold))
     return result
 
-if __name__ == "__main__":
 
+if __name__ == "__main__":
     voxel_size = 0.05 # means 5cm for the dataset
-    source, target, source_down, target_down, source_fpfh, target_fpfh = \
-            prepare_dataset(voxel_size)
+    source, target, source_down, target_down, source_fpfh, target_fpfh = prepare_dataset(voxel_size)
 
     start = time.time()
-    result_ransac = execute_global_registration(source_down, target_down,
-            source_fpfh, target_fpfh, voxel_size)
+    result_ransac = execute_global_registration(source_down,
+                                                target_down,
+                                                source_fpfh,
+                                                target_fpfh,
+                                                voxel_size)
     print(result_ransac)
     print("Global registration took %.3f sec.\n" % (time.time() - start))
-    draw_registration_result(source_down, target_down,
-            result_ransac.transformation)
+    draw_registration_result(source_down,
+                             target_down,
+                             result_ransac.transformation)
 
     start = time.time()
-    result_fast = execute_fast_global_registration(source_down, target_down,
-            source_fpfh, target_fpfh, voxel_size)
+    result_fast = execute_fast_global_registration(source_down,
+                                                   target_down,
+                                                   source_fpfh,
+                                                   target_fpfh,
+                                                   voxel_size)
     print("Fast global registration took %.3f sec.\n" % (time.time() - start))
-    draw_registration_result(source_down, target_down,
-            result_fast.transformation)
+    draw_registration_result(source_down,
+                             target_down,
+                             result_fast.transformation)
